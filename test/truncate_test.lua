@@ -1,8 +1,9 @@
+local testcase = require('testcase')
 local assert = require('assert')
 local fileno = require('io.fileno')
 local truncate = require('io.truncate')
 
-local function test_truncate_file()
+function testcase.truncate_file()
     -- confirm initial length
     local f = assert(io.tmpfile())
     assert.equal(f:seek('end'), 0)
@@ -15,9 +16,8 @@ local function test_truncate_file()
     assert(truncate(f, 5))
     assert.equal(f:seek('end'), 5)
 end
-test_truncate_file()
 
-local function test_truncate_fd()
+function testcase.truncate_fd()
     -- confirm initial length
     local f = assert(io.tmpfile())
     assert.equal(f:seek('end'), 0)
@@ -36,9 +36,8 @@ local function test_truncate_fd()
     assert.is_false(ok)
     assert.re_match(err, 'bad file', 'i')
 end
-test_truncate_fd()
 
-local function test_truncate_filename()
+function testcase.truncate_filename()
     -- confirm initial length
     local tmpfile = os.tmpname()
     local f = assert(io.open(tmpfile, 'w+'))
@@ -58,9 +57,8 @@ local function test_truncate_filename()
     assert.is_false(ok)
     assert.re_match(err, 'no .* file', 'i')
 end
-test_truncate_filename()
 
-local function test_truncate_with_invalid_arguments()
+function testcase.truncate_with_invalid_arguments()
     -- test that throw error if first argument is invalid
     local err = assert.throws(truncate, {}, 10)
     assert.match(err, 'bad argument .* string, integer or file', false)
@@ -69,5 +67,3 @@ local function test_truncate_with_invalid_arguments()
     err = assert.throws(truncate, 'test.txt', {})
     assert.match(err, 'bad argument .*number expected', false)
 end
-test_truncate_with_invalid_arguments()
-
