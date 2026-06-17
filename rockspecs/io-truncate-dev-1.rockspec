@@ -1,3 +1,4 @@
+rockspec_format = "3.0"
 package = "io-truncate"
 version = "dev-1"
 source = {
@@ -12,19 +13,22 @@ description = {
 dependencies = {
     "lua >= 5.1",
 }
+build_dependencies = {
+    "luarocks-build-hooks >= 0.8.0",
+}
 build = {
-    type = "make",
-    build_variables = {
-        CFLAGS = "$(CFLAGS)",
-        WARNINGS = "-Wall -Wno-trigraphs -Wmissing-field-initializers -Wreturn-type -Wmissing-braces -Wparentheses -Wno-switch -Wunused-function -Wunused-label -Wunused-parameter -Wunused-variable -Wunused-value -Wuninitialized -Wunknown-pragmas -Wshadow -Wsign-compare",
-        CPPFLAGS = "-I$(LUA_INCDIR)",
-        LDFLAGS = "$(LIBFLAG)",
-        LIB_EXTENSION = "$(LIB_EXTENSION)",
-        IO_TRUNCATE_COVERAGE = "$(IO_TRUNCATE_COVERAGE)",
+    type = "hooks",
+    before_build = "$(extra-vars)",
+    extra_variables = {
+        CFLAGS = "-Wall -Wno-trigraphs -Wmissing-field-initializers -Wreturn-type -Wmissing-braces -Wparentheses -Wno-switch -Wunused-function -Wunused-label -Wunused-parameter -Wunused-variable -Wunused-value -Wuninitialized -Wunknown-pragmas -Wshadow -Wsign-compare",
     },
-    install_variables = {
-        LIB_EXTENSION = "$(LIB_EXTENSION)",
-        INST_LIBDIR = "$(LIBDIR)/io/",
-        INST_LUADIR = "$(LUADIR)",
+    conditional_variables = {
+        IO_TRUNCATE_COVERAGE = {
+            CFLAGS = "--coverage",
+            LIBFLAG = "--coverage",
+        },
+    },
+    modules = {
+        ["io.truncate"] = "src/truncate.c",
     },
 }
